@@ -1,25 +1,25 @@
-import { Client, Databases, Storage, Query, ID } from "appwrite";
+import { Client, TablesDB, Storage, Query, ID } from "appwrite";
 import { config } from "../config/config.js";
 
 class Service {
   client = new Client();
-  databases;
+  tabledb;
   storage;
 
   constructor() {
     this.client
-      .setEndpoint(config.appwriteUrl) // ✅ Correct order: endpoint first
-      .setProject(config.appwriteProjectId); // ✅ Then project ID
-    this.databases = new Databases(this.client);
+      .setProject(config.appwriteProjectId)
+      .setEndpoint(config.appwriteUrl);
+    this.tabledb = new TablesDB(this.client);
     this.storage = new Storage(this.client);
   }
 
   async createPost({ title, slug, content, featuredImage, status, userId }) {
     try {
-      const post = await this.databases.createDocument({
+      const post = await this.tabledb.createRow({
         databaseId: config.appwriteDatabaseId,
-        collectionId: config.appwriteTableName,
-        documentId: slug, // can also use ID.unique()
+        TableId: config.appwriteTableName,
+        rowId: slug, // can also use ID.unique()
         data: {
           title,
           content,
@@ -37,10 +37,10 @@ class Service {
 
   async updatePost(slug, { title, content, featuredImage, status }) {
     try {
-      const updatedPost = await this.databases.updateDocument({
+      const updatedPost = await this.tabledb.updateRow({
         databaseId: config.appwriteDatabaseId,
-        collectionId: config.appwriteTableName,
-        documentId: slug,
+        TableId: config.appwriteTableName,
+        rowId: slug,
         data: {
           title,
           content,
@@ -57,16 +57,72 @@ class Service {
 
   async deletePost(slug) {
     try {
-      await this.databases.deleteDocument({
+      await this.tabledb.deleteRow({
         databaseId: config.appwriteDatabaseId,
-        collectionId: config.appwriteTableName,
-        documentId: slug,
+        TableId: config.appwriteTableName,
+        rowId: slug,
       });
       return true;
     } catch (error) {
       console.error(`Appwrite service deletePost error: ${error.message}`);
       return false;
     }
+  }
+  async getPost(slug) {
+    try {
+      return await this.tabledb.getRow({
+        databaseId: config.appwriteDatabaseId,
+        TableId: config.appwriteTableName,
+        rowId: slug,
+      });
+    } catch (error) {
+      console.log(`Appwrite service getPost error: ${error}`);
+      return false;
+    }
+  }
+
+  async getAllPosts(queries = [Query.equal("status", true)]) {
+    try {
+      return await this.tabledb.listRows({
+        databaseId: config.appwriteDatabaseId,
+        TableId: config.appwriteTableName,
+        queries,
+      });
+    } catch (error) {
+      console.log(`Appwrite service getAllPosts error: ${error}`);
+      return false;
+    }
+  }
+  async uploadFile(file) {
+    try {
+      return await this.storage.createFile({
+        bucketId: config.appwriteBucketId,
+        fileId: ID.unique(),
+        file,
+      });
+    } catch (error) {
+      console.log(`Appwrite service uploadFile error: ${error}`);
+    }
+  }
+
+  async deleteFile(fileId) {
+    try {
+      await this.storage.deleteFile({
+        bucketId: config.appwriteBucketId,
+        fileId,
+      });
+      return true;
+    } catch (error) {
+      console.log(`Appwrite service deleteFile error: ${error}`);
+      return false;
+    }
+  }
+
+  getfIlePreview(fileId) {
+    return this.storage.getFilePreview({
+      bucketId: config.appwriteBucketId,
+      fileId,
+    });
   }
 }
 

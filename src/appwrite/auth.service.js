@@ -6,8 +6,9 @@ class AuthService {
   account;
   constructor() {
     this.client
-      .setEndpoint(config.appwriteProjectId)
-      .setProject(config.appwriteUrl);
+      .setProject(config.appwriteProjectId)
+      .setEndpoint(config.appwriteUrl);
+
     this.account = new Account(this.client);
   }
   async createAccount({ email, password, name }) {
@@ -36,12 +37,14 @@ class AuthService {
     }
   }
 
-  async getUser() {
+  async getCurrentUser() {
     try {
       const user = await this.account.get();
       return user;
     } catch (error) {
-      console.log(`Appwrite service getUser error: ${error}`);
+      if (error.code !== 401) {
+        console.log(`Appwrite service getUser error: ${error}`);
+      }
     }
     return null;
   }
