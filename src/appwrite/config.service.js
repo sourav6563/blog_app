@@ -81,7 +81,7 @@ class Service {
     }
   }
 
-  async getAllPosts(queries = [Query.equal("status", true)]) {
+  async getAllPosts(queries = [Query.equal("status", "active")]) {
     try {
       return await this.tabledb.listRows({
         databaseId: config.appwriteDatabaseId,
