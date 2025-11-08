@@ -118,7 +118,7 @@ class Service {
     }
   }
 
-  getfIlePreview(fileId) {
+  getFilePreview(fileId) {
     return this.storage.getFilePreview({
       bucketId: config.appwriteBucketId,
       fileId,

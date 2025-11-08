@@ -12,6 +12,7 @@ export function Button({
     <button
       className={`px-4 py-2 rounded-lg ${textColor} ${bgColor}${className}`}
       {...props}
+      type={type}
     >
       {childern}
     </button>
