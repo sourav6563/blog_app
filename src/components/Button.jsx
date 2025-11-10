@@ -1,7 +1,7 @@
 import React from "react";
 
 export function Button({
-  childern,
+  children,
   type = "button",
   bgColor = "bg-blue-500",
   textColor = "text-white",
@@ -14,7 +14,7 @@ export function Button({
       {...props}
       type={type}
     >
-      {childern}
+      {children}
     </button>
   );
 }

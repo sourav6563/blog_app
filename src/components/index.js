@@ -9,3 +9,4 @@ export { Input } from "./Input.jsx";
 export { PostCard } from "./PostCard.jsx";
 export { Select } from "./Select.jsx";
 export { Login } from "./Login.jsx";
+export { RTE } from "./RTE.jsx";
