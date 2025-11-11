@@ -10,3 +10,6 @@ export { PostCard } from "./PostCard.jsx";
 export { Select } from "./Select.jsx";
 export { Login } from "./Login.jsx";
 export { RTE } from "./RTE.jsx";
+export { SignUp } from "./SignUp.jsx";
+export { PostForm } from "./Post-Form/PostForm.jsx";
+export { Protected } from "./Authlayout.jsx";
