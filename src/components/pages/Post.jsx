@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import appwriteService from "../../appwrite/config.service.js";
-import { Button, Container } from "../components";
+import { Button, Container } from "../index.js";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
 
-export  function Post() {
+export function Post() {
   const [post, setPost] = useState(null);
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -37,9 +37,9 @@ export  function Post() {
       <Container>
         <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
           <img
-            src={appwriteService.getFilePreview(post.featuredImage)}
+            src={appwriteService.getFileView(post.featuredImage)}
             alt={post.title}
-            className="rounded-xl"
+            className="rounded-xl "
           />
 
           {isAuthor && (

@@ -27,13 +27,16 @@ class AuthService {
       }
     } catch (error) {
       console.log(`Appwrite service create account error: ${error}`);
+      throw error;
     }
   }
   async login({ email, password }) {
     try {
       return await this.account.createEmailPasswordSession({ email, password });
     } catch (error) {
+      // console.log(`Appwrite service login error: ${error}`);
       console.log(`Appwrite service login error: ${error}`);
+      throw error;
     }
   }
 
@@ -42,11 +45,9 @@ class AuthService {
       const user = await this.account.get();
       return user;
     } catch (error) {
-      if (error.code !== 401) {
-        console.log(`Appwrite service getUser error: ${error}`);
-      }
+      console.log(`Appwrite service getUser error: ${error}`);
+      throw error;
     }
-    return null;
   }
 
   async logout() {

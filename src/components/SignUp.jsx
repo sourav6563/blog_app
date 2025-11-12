@@ -11,9 +11,11 @@ export function SignUp() {
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const signUp = async (data) => {
     setError(null);
+    setLoading(true);
     try {
       const session = await authService.createAccount(data);
       if (session) {
@@ -23,6 +25,8 @@ export function SignUp() {
       }
     } catch (error) {
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -49,7 +53,7 @@ export function SignUp() {
         </p>
         {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
         <form onSubmit={handleSubmit(signUp)}>
-          <div className="space-y-5 ">
+          <div className="space-y-5">
             <Input
               label="FullName"
               placeholder="Enter your full name"
@@ -81,8 +85,8 @@ export function SignUp() {
                 },
               })}
             />
-            <Button type="submit" className="w-full">
-              Create Account
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </div>
         </form>

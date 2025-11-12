@@ -6,11 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export function PostForm({ post }) {
-  const { register, handleSubmit, watch, setValue, control, getValues } =
+  const { register, handleSubmit, watch, setValue, control, getValues, reset } =
     useForm({
       defaultValues: {
         title: post?.title || "",
-        slug: post?.slug || "",
+        slug: post?.$id || "",
         content: post?.content || "",
         status: post?.status || "active",
       },
@@ -21,22 +21,22 @@ export function PostForm({ post }) {
   const submit = async (data) => {
     if (post) {
       const file = data.image[0]
-        ? appWriteService.uploadFile(data.image[0])
+        ? await appWriteService.uploadFile(data.image[0])
         : null;
       if (file) {
         appWriteService.deleteFile(post.featuredImage);
       }
-      const updatePostFile = await appWriteService.updatePost(post.$id, {
+      const dbPost = await appWriteService.updatePost(post.$id, {
         ...data,
-        featuredImage: file ? file.$id : undefined,
+        featuredImage: file ? file.$id : post.featuredImage,
       });
 
-      if (updatePostFile) {
+      if (dbPost) {
         navigate(`/post/${post.$id}`);
       }
     } else {
       const file = data.image[0]
-        ? appWriteService.uploadFile(data.image[0])
+        ? await appWriteService.uploadFile(data.image[0])
         : null;
       if (file) {
         const fileId = file.$id;
@@ -79,6 +79,17 @@ export function PostForm({ post }) {
     };
   }, [watch, slugTransform, setValue]);
 
+  useEffect(() => {
+    if (post) {
+      reset({
+        title: post.title,
+        slug: post.$id,
+        content: post.content,
+        status: post.status,
+      });
+    }
+  }, [post, reset]);
+
   return (
     <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
       <div className="w-2/3 px-2">
@@ -114,10 +125,10 @@ export function PostForm({ post }) {
           accept="image/png, image/jpg, image/jpeg, image/gif"
           {...register("image", { required: !post })}
         />
-        {post && (
+        {post?.featuredImage && (
           <div className="w-full mb-4">
             <img
-              src={appWriteService.getFilePreview(post.featuredImage)}
+              src={appWriteService.getFileView(post.featuredImage)}
               alt={post.title}
               className="rounded-lg"
             />

@@ -1,4 +1,12 @@
-import { Client, TablesDB, Storage, Query, ID } from "appwrite";
+import {
+  Client,
+  TablesDB,
+  Storage,
+  Query,
+  ID,
+  Permission,
+  Role,
+} from "appwrite";
 import { config } from "../config/config.js";
 
 class Service {
@@ -18,12 +26,12 @@ class Service {
     try {
       const post = await this.tabledb.createRow({
         databaseId: config.appwriteDatabaseId,
-        TableId: config.appwriteTableName,
+        tableId: config.appwriteTableName,
         rowId: slug, // can also use ID.unique()
         data: {
           title,
           content,
-          featuredImage,
+          featuredImage: featuredImage || "",
           status,
           userId,
         },
@@ -39,7 +47,7 @@ class Service {
     try {
       const updatedPost = await this.tabledb.updateRow({
         databaseId: config.appwriteDatabaseId,
-        TableId: config.appwriteTableName,
+        tableId: config.appwriteTableName,
         rowId: slug,
         data: {
           title,
@@ -59,7 +67,7 @@ class Service {
     try {
       await this.tabledb.deleteRow({
         databaseId: config.appwriteDatabaseId,
-        TableId: config.appwriteTableName,
+        tableId: config.appwriteTableName,
         rowId: slug,
       });
       return true;
@@ -72,7 +80,7 @@ class Service {
     try {
       return await this.tabledb.getRow({
         databaseId: config.appwriteDatabaseId,
-        TableId: config.appwriteTableName,
+        tableId: config.appwriteTableName,
         rowId: slug,
       });
     } catch (error) {
@@ -85,7 +93,7 @@ class Service {
     try {
       return await this.tabledb.listRows({
         databaseId: config.appwriteDatabaseId,
-        TableId: config.appwriteTableName,
+        tableId: config.appwriteTableName,
         queries,
       });
     } catch (error) {
@@ -99,6 +107,7 @@ class Service {
         bucketId: config.appwriteBucketId,
         fileId: ID.unique(),
         file,
+        permissions: [Permission.read(Role.any())],
       });
     } catch (error) {
       console.log(`Appwrite service uploadFile error: ${error}`);
@@ -118,8 +127,8 @@ class Service {
     }
   }
 
-  getFilePreview(fileId) {
-    return this.storage.getFilePreview({
+  getFileView(fileId) {
+    return this.storage.getFileView({
       bucketId: config.appwriteBucketId,
       fileId,
     });

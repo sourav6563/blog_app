@@ -4,4 +4,5 @@ export const config = {
   appwriteDatabaseId: String(import.meta.env.VITE_APPWRITE_DATABASE_ID),
   appwriteTableName: String(import.meta.env.VITE_APPWRITE_TABLE_NAME),
   appwriteBucketId: String(import.meta.env.VITE_APPWRITE_BUCKET_ID),
+  tinymceApiKey: String(import.meta.env.VITE_TINYMCE_KEY),
 };

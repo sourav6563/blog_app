@@ -11,8 +11,10 @@ export function Login() {
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const login = async (data) => {
     setError(null);
+    setLoading(true);
     try {
       const session = await authService.login(data);
       if (session) {
@@ -22,6 +24,8 @@ export function Login() {
       }
     } catch (error) {
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,8 +80,8 @@ export function Login() {
                 },
               })}
             />
-            <Button type="submit" className="w-full">
-              login
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
             </Button>
           </div>
         </form>
