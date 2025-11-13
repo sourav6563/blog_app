@@ -128,10 +128,7 @@ class Service {
   }
 
   getFileView(fileId) {
-    return this.storage.getFileView({
-      bucketId: config.appwriteBucketId,
-      fileId,
-    });
+    return this.storage.getFileView(config.appwriteBucketId, fileId).toString();
   }
 }
 

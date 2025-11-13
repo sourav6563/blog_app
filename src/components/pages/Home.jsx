@@ -10,6 +10,7 @@ export function Home() {
       .getAllPosts([])
       .then((posts) => {
         if (posts) {
+          console.log("Fetched posts:", posts.rows);
           setPosts(posts.rows);
         }
       })
